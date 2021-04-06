@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "node server/server.js"
+    "start": "node server/server.js",
+    "build": "echo build..."
   },
   "dependencies": {
     "express": "^4.17.1",
