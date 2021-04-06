@@ -56,7 +56,7 @@ app.get('/getPayload', function (req, res) {
 });
 
 
-var port = process.env.PORT || 3003;
+var port = parseInt(process.env.PORT, 10) || 3003;
 var ready = new Promise(function willListen(resolve, reject) {
     app.listen(port, function didListen(err) {
         if (err) {
