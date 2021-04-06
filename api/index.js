@@ -18,7 +18,7 @@ webPush.setVapidDetails(
     process.env.VAPID_PRIVATE_KEY
 );
 
-app.use(express.static('./static'));
+app.use(express.static('./public'));
 
 app.get('/vapidPublicKey', function (req, res) {
     res.send(process.env.VAPID_PUBLIC_KEY);
@@ -56,17 +56,5 @@ app.get('/getPayload', function (req, res) {
 });
 
 
-var port = parseInt(process.env.PORT, 10) || 3003;
-var ready = new Promise(function willListen(resolve, reject) {
-    app.listen(port, function didListen(err) {
-        if (err) {
-            reject(err);
-            return;
-        }
-        console.log('app.listen on http://localhost:%d', port);
-        resolve();
-    });
-});
 
-exports.ready = ready;
-exports.app = app;
+module.exports = app;

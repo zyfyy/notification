@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "node server/server.js",
+    "start": "node server/index.js",
     "build": "echo build..."
   },
   "dependencies": {
