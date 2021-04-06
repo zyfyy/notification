@@ -1,60 +1,74 @@
-var express = require('express');
-const webPush = require('web-push');
-var app = express();
+const app = require('express')();
+const {v4} = require('uuid');
 
-
-if (!process.env.VAPID_PUBLIC_KEY || !process.env.VAPID_PRIVATE_KEY) {
-    console.log(
-        'You must set the VAPID_PUBLIC_KEY and VAPID_PRIVATE_KEY ' +
-            'environment variables. You can use the following ones:'
-    );
-    console.log(webPush.generateVAPIDKeys());
-    return;
-}
-// Set the keys used for encrypting the push messages.
-webPush.setVapidDetails(
-    'http://localhost:30023/',
-    process.env.VAPID_PUBLIC_KEY,
-    process.env.VAPID_PRIVATE_KEY
-);
-
-app.use(express.static('./public'));
-
-app.get('/api/vapidPublicKey', function (req, res) {
-    res.send(process.env.VAPID_PUBLIC_KEY);
+app.get('/api', (req, res) => {
+    const path = `/api/item/${v4()}`;
+    res.setHeader('Content-Type', 'text/html');
+    res.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
+    res.end(`Hello! Go to item: <a href="${path}">${path}</a>`);
 });
 
-app.post('/api/register', function (req, res) {
-    // A real world application would store the subscription info.
-    res.sendStatus(201);
+app.get('/api/item/:slug', (req, res) => {
+    const {slug} = req.params;
+    res.end(`Item: ${slug}`);
 });
-const payloads = {};
-
-app.post('/api/sendNotification', express.json(), function (req, res) {
-    const subscription = req.body.subscription;
-    const payload = req.body.payload;
-    const options = {
-        TTL: req.body.ttl
-    };
-
-    setTimeout(function () {
-        payloads[req.body.subscription.endpoint] = payload;
-        webPush
-            .sendNotification(subscription, payload, options)
-            .then(function () {
-                res.sendStatus(201);
-            })
-            .catch(function (error) {
-                console.log(error);
-                res.sendStatus(500);
-            });
-    }, req.body.delay * 1000);
-});
-
-app.get('/getPayload', function (req, res) {
-    res.send(payloads[req.query.endpoint]);
-});
-
-
 
 module.exports = app;
+
+// const express = require('express');
+// const webPush = require('web-push');
+// const app = express();
+
+// if (!process.env.VAPID_PUBLIC_KEY || !process.env.VAPID_PRIVATE_KEY) {
+//     console.log(
+//         'You must set the VAPID_PUBLIC_KEY and VAPID_PRIVATE_KEY ' +
+//             'environment variables. You can use the following ones:'
+//     );
+//     console.log(webPush.generateVAPIDKeys());
+//     return;
+// }
+// // Set the keys used for encrypting the push messages.
+// webPush.setVapidDetails(
+//     'http://localhost:30023/',
+//     process.env.VAPID_PUBLIC_KEY,
+//     process.env.VAPID_PRIVATE_KEY
+// );
+
+// app.use(express.static('./public'));
+
+// app.get('/api/vapidPublicKey', function (req, res) {
+//     res.send(process.env.VAPID_PUBLIC_KEY);
+// });
+
+// app.post('/api/register', function (req, res) {
+//     // A real world application would store the subscription info.
+//     res.sendStatus(201);
+// });
+// const payloads = {};
+
+// app.post('/api/sendNotification', express.json(), function (req, res) {
+//     const subscription = req.body.subscription;
+//     const payload = req.body.payload;
+//     const options = {
+//         TTL: req.body.ttl
+//     };
+
+//     setTimeout(function () {
+//         payloads[req.body.subscription.endpoint] = payload;
+//         webPush
+//             .sendNotification(subscription, payload, options)
+//             .then(function () {
+//                 res.sendStatus(201);
+//             })
+//             .catch(function (error) {
+//                 console.log(error);
+//                 res.sendStatus(500);
+//             });
+//     }, req.body.delay * 1000);
+// });
+
+// app.get('/api/getPayload', function (req, res) {
+//     res.send(payloads[req.query.endpoint]);
+// });
+
+// module.exports = app;
