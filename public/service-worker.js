@@ -11,7 +11,7 @@ self.addEventListener('push', function (event) {
     event.waitUntil(
         getEndpoint()
             .then(function (endpoint) {
-                return fetch('./getPayload?endpoint=' + endpoint);
+                return fetch('./api/getPayload?endpoint=' + endpoint);
             })
             .then(function (response) {
                 return response.text();

@@ -20,17 +20,17 @@ webPush.setVapidDetails(
 
 app.use(express.static('./public'));
 
-app.get('/vapidPublicKey', function (req, res) {
+app.get('/api/vapidPublicKey', function (req, res) {
     res.send(process.env.VAPID_PUBLIC_KEY);
 });
 
-app.post('/register', function (req, res) {
+app.post('/api/register', function (req, res) {
     // A real world application would store the subscription info.
     res.sendStatus(201);
 });
 const payloads = {};
 
-app.post('/sendNotification', express.json(), function (req, res) {
+app.post('/api/sendNotification', express.json(), function (req, res) {
     const subscription = req.body.subscription;
     const payload = req.body.payload;
     const options = {
